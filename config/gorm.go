@@ -3,6 +3,8 @@ package config
 import (
 	"context"
 	"database/sql"
+	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/habibiiberahim/go-backend/exception"
@@ -11,17 +13,32 @@ import (
 )
 
 func NewGormDatabase(configuration Config) *gorm.DB {
-	dsn := "root:root_root@tcp(127.0.0.1:3306)/lolosasn?charset=utf8mb4&parseTime=True&loc=Local"
+
+	user := configuration.Get("DB_USER")
+	pass := configuration.Get("DB_PASS")
+	host := configuration.Get("DB_HOST")
+	port := configuration.Get("DB_PORT")
+	dbname := configuration.Get("DB_NAME")
+
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, pass, host, port, dbname)
 
 	sqlDB, err := sql.Open("mysql", dsn)
-
-	sqlDB.SetMaxIdleConns(10)
-
-	sqlDB.SetMaxOpenConns(100)
-
-	sqlDB.SetConnMaxLifetime(10 * time.Minute)
-
 	exception.PanicIfNeeded(err)
+
+	maxIdleConn, err := strconv.Atoi(configuration.Get("DB_MAX_IDLE_CONNECTION"))
+	exception.PanicIfNeeded(err)
+
+	maxOpenConn, err := strconv.Atoi(configuration.Get("DB_MAX_OPEN_CONNECTION"))
+	exception.PanicIfNeeded(err)
+
+	maxLifetimeConn, err := strconv.Atoi(configuration.Get("DB_MAX_LIFETIME_CONNECTION"))
+	exception.PanicIfNeeded(err)
+
+	sqlDB.SetMaxIdleConns(maxIdleConn)
+
+	sqlDB.SetMaxOpenConns(maxOpenConn)
+
+	sqlDB.SetConnMaxLifetime(time.Duration(maxLifetimeConn) * time.Minute)
 
 	database, err := gorm.Open(mysql.New(mysql.Config{
 		Conn: sqlDB,
