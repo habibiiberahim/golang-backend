@@ -27,9 +27,10 @@ func main() {
 
 	//setup controller
 	userController := controller.NewUserController(&userService)
-
+	// authController := controller.NewAuthController()
 	//setup routes
 	userController.Route(app)
+	// authController.Route(app)
 
 	err := app.Listen(":3001")
 

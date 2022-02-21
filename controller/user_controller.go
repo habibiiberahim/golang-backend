@@ -18,11 +18,11 @@ func NewUserController(userService *service.UserService) UserController {
 
 func (controller *UserController) Route(app *fiber.App) {
 	api := app.Group("/api/v1")
-	api.Get("/users", controller.List)
+	api.Get("/users", controller.FindAll)
 }
 
-func (controller *UserController) List(c *fiber.Ctx) error {
-	responses := controller.UserService.List()
+func (controller *UserController) FindAll(c *fiber.Ctx) error {
+	responses := controller.UserService.FindAll()
 	return c.JSON(model.WebResponse{
 		Code:   200,
 		Status: "Success",

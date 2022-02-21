@@ -5,7 +5,6 @@ import (
 )
 
 type UserService interface {
-	//Function create membutuhkan request model lalu akan dikembalikan menjadi request response
-
-	List() (response []model.GetProductResponse)
+	//
+	FindAll() (response []model.GetProductResponse)
 }

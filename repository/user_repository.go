@@ -5,5 +5,5 @@ import (
 )
 
 type UserRepository interface {
-	GetAll() []entity.User
+	FindAll() []entity.User
 }

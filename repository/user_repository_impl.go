@@ -15,6 +15,6 @@ type userRepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func (repository userRepositoryImpl) GetAll() (users []entity.User) {
+func (repository userRepositoryImpl) FindAll() (users []entity.User) {
 	return users
 }
