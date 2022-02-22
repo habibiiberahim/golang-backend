@@ -11,4 +11,6 @@ type AuthService interface {
 	FindByName(name string) (*entity.User, error)
 	FindByEmail(email string) (*entity.User, error)
 	Login(c fiber.Ctx)
+	Redirect(c *fiber.Ctx) string
+	Callback(c *fiber.Ctx) string
 }

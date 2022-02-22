@@ -24,13 +24,14 @@ func main() {
 
 	//setup service
 	userService := service.NewUserService(&userRepository)
+	authService := service.NewAuthService()
 
 	//setup controller
 	userController := controller.NewUserController(&userService)
-	// authController := controller.NewAuthController()
+	authController := controller.NewAuthController(&authService)
 	//setup routes
 	userController.Route(app)
-	// authController.Route(app)
+	authController.Route(app)
 
 	err := app.Listen(":3001")
 
