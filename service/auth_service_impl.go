@@ -1,17 +1,24 @@
 package service
 
 import (
+	"time"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/golang-jwt/jwt"
 	"github.com/habibiiberahim/go-backend/config"
+	"github.com/habibiiberahim/go-backend/entity"
 	"github.com/habibiiberahim/go-backend/exception"
+	"github.com/habibiiberahim/go-backend/repository"
 )
 
-func NewAuthService() AuthService {
-	return &authServiceImpl{}
+func NewAuthService(userRepository *repository.UserRepository) AuthService {
+	return &authServiceImpl{
+		UserRepository: *userRepository,
+	}
 }
 
 type authServiceImpl struct {
-	AuthService
+	UserRepository repository.UserRepository
 }
 
 func (service *authServiceImpl) Redirect(c *fiber.Ctx) string {
@@ -48,11 +55,30 @@ func (service *authServiceImpl) Redirect(c *fiber.Ctx) string {
 func (service *authServiceImpl) Callback(c *fiber.Ctx) string {
 	state := c.Query("state")
 	code := c.Query("code")
+	provider := c.Params("provider")
 
 	// Handle callback and check for errors
 	user, _, err := config.Gocial.Handle(state, code)
 	exception.PanicIfNeeded(err)
+	userData := service.UserRepository.GetOrRegister(provider, user)
+	jwtToken := service.CreateToken(&userData)
 
 	// Print in terminal user information
-	return user.FullName
+	return jwtToken
+}
+
+func (service *authServiceImpl) CreateToken(user *entity.User) string {
+	configuration := config.New()
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"user_id": user.ID,
+		"email":   user.Email,
+		"exp":     time.Now().AddDate(0, 0, 7).Unix(),
+		"iat":     time.Now().Unix(),
+	})
+
+	// Sign and get the complete encoded token as a string using the secret
+	tokenString, err := token.SignedString([]byte(configuration.Get("APP_SECRET")))
+	exception.PanicIfNeeded(err)
+
+	return tokenString
 }

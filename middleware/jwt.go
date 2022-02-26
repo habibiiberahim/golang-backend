@@ -3,31 +3,22 @@ package middleware
 import (
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
-	"github.com/habibiiberahim/go-backend/model"
+	"github.com/habibiiberahim/go-backend/config"
 )
 
-func JWTProtected() func(*fiber.Ctx) error {
+func Protected() fiber.Handler {
+	configuration := config.New()
 	return jwtware.New(jwtware.Config{
-		SigningKey:   []byte("API_SECRET"),
-		ErrorHandler: JwtErrorHandler,
+		SigningKey:   []byte(configuration.Get("APP_SECRET")),
+		ErrorHandler: jwtError,
 	})
 }
 
-func JwtErrorHandler(c *fiber.Ctx, err error) error {
-
+func jwtError(c *fiber.Ctx, err error) error {
 	if err.Error() == "Missing or malformed JWT" {
-		return c.Status(fiber.StatusBadRequest).JSON(model.WebResponse{
-			Code:   400,
-			Status: "Bad Request",
-			Data:   nil,
-		})
-
-	} else {
-		return c.Status(fiber.StatusBadRequest).JSON(model.WebResponse{
-			Code:   500,
-			Status: "Internal Service Error",
-			Data:   nil,
-		})
+		return c.Status(fiber.StatusBadRequest).
+			JSON(fiber.Map{"status": "error", "message": "Missing or malformed JWT", "data": nil})
 	}
-
+	return c.Status(fiber.StatusUnauthorized).
+		JSON(fiber.Map{"status": "error", "message": "Invalid or expired JWT", "data": nil})
 }

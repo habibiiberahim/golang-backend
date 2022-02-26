@@ -24,7 +24,7 @@ func main() {
 
 	//setup service
 	userService := service.NewUserService(&userRepository)
-	authService := service.NewAuthService()
+	authService := service.NewAuthService(&userRepository)
 
 	//setup controller
 	userController := controller.NewUserController(&userService)

@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/habibiiberahim/go-backend/entity"
 	"github.com/habibiiberahim/go-backend/exception"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -45,6 +46,8 @@ func NewGormDatabase(configuration Config) *gorm.DB {
 	}), &gorm.Config{})
 
 	exception.PanicIfNeeded(err)
+
+	database.AutoMigrate(&entity.User{})
 
 	return database
 }

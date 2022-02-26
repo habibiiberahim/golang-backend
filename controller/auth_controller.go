@@ -35,3 +35,12 @@ func (controller *AuthController) Callback(c *fiber.Ctx) error {
 		Data:   responses,
 	})
 }
+
+func (controller *AuthController) Login(c *fiber.Ctx) error {
+	responses := controller.AuthService.Callback(c)
+	return c.JSON(model.WebResponse{
+		Code:   200,
+		Status: "Success",
+		Data:   responses,
+	})
+}
