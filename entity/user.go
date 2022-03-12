@@ -9,4 +9,5 @@ type User struct {
 	SocialId string `gorm:"size:100:not null:unique"`
 	Provider string `gorm:"size:255"`
 	Password string `gorm:"size:255:default:''"`
+	Role     bool   `gorm:"default:0"`
 }

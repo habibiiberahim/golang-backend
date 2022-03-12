@@ -4,6 +4,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	jwtware "github.com/gofiber/jwt/v3"
 	"github.com/habibiiberahim/go-backend/config"
+	"github.com/habibiiberahim/go-backend/model"
 )
 
 func Protected() fiber.Handler {
@@ -17,8 +18,18 @@ func Protected() fiber.Handler {
 func jwtError(c *fiber.Ctx, err error) error {
 	if err.Error() == "Missing or malformed JWT" {
 		return c.Status(fiber.StatusBadRequest).
-			JSON(fiber.Map{"status": "error", "message": "Missing or malformed JWT", "data": nil})
+			JSON(
+				model.WebResponse{
+					Code:   400,
+					Status: "Error",
+					Data:   "Missing or malformed JWT",
+				})
 	}
 	return c.Status(fiber.StatusUnauthorized).
-		JSON(fiber.Map{"status": "error", "message": "Invalid or expired JWT", "data": nil})
+		JSON(
+			model.WebResponse{
+				Code:   401,
+				Status: "Error",
+				Data:   "Invalid or expired JWT",
+			})
 }

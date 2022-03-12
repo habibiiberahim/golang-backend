@@ -60,6 +60,7 @@ func (service *authServiceImpl) Callback(c *fiber.Ctx) string {
 	// Handle callback and check for errors
 	user, _, err := config.Gocial.Handle(state, code)
 	exception.PanicIfNeeded(err)
+
 	userData := service.UserRepository.GetOrRegister(provider, user)
 	jwtToken := service.CreateToken(&userData)
 
