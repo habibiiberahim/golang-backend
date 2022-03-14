@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/gofiber/fiber/v2 v2.24.0
 	github.com/gofiber/jwt/v3 v3.2.3
+	github.com/google/wire v0.5.0
 	github.com/joho/godotenv v1.4.0
 	gorm.io/driver/mysql v1.2.2
 	gorm.io/gorm v1.22.4
