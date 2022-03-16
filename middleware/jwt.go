@@ -8,7 +8,7 @@ import (
 )
 
 func Protected() fiber.Handler {
-	configuration := config.New()
+	configuration := config.NewConfiguration()
 	return jwtware.New(jwtware.Config{
 		SigningKey:   []byte(configuration.Get("APP_SECRET")),
 		ErrorHandler: jwtError,

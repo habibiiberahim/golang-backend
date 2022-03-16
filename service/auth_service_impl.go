@@ -11,18 +11,18 @@ import (
 	"github.com/habibiiberahim/go-backend/repository"
 )
 
-func NewAuthService(userRepository *repository.UserRepository) AuthService {
-	return &authServiceImpl{
-		UserRepository: *userRepository,
+func NewAuthService(userRepository repository.UserRepository) *AuthServiceImpl {
+	return &AuthServiceImpl{
+		UserRepository: userRepository,
 	}
 }
 
-type authServiceImpl struct {
+type AuthServiceImpl struct {
 	UserRepository repository.UserRepository
 }
 
-func (service *authServiceImpl) Redirect(c *fiber.Ctx) string {
-	configuration := config.New()
+func (service *AuthServiceImpl) Redirect(c *fiber.Ctx) string {
+	configuration := config.NewConfiguration()
 	provider := c.Params("provider")
 
 	providerSecrets := map[string]map[string]string{
@@ -52,7 +52,7 @@ func (service *authServiceImpl) Redirect(c *fiber.Ctx) string {
 	return authURL
 }
 
-func (service *authServiceImpl) Callback(c *fiber.Ctx) string {
+func (service *AuthServiceImpl) Callback(c *fiber.Ctx) string {
 	state := c.Query("state")
 	code := c.Query("code")
 	provider := c.Params("provider")
@@ -68,8 +68,8 @@ func (service *authServiceImpl) Callback(c *fiber.Ctx) string {
 	return jwtToken
 }
 
-func (service *authServiceImpl) CreateToken(user *entity.User) string {
-	configuration := config.New()
+func (service *AuthServiceImpl) CreateToken(user *entity.User) string {
+	configuration := config.NewConfiguration()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id": user.ID,
 		"email":   user.Email,

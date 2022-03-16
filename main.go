@@ -11,29 +11,31 @@ import (
 
 func main() {
 	//setup config
-	configuration := config.New()
+	configuration := config.NewConfiguration()
+
+	//setup fiber
+	fiberConfig := config.NewFiberConfig()
+	app := fiber.New(fiberConfig)
 
 	//setup database
 	database := config.NewGormDatabase(configuration)
-
-	//setup fiber
-	app := fiber.New(config.NewFiberConfig())
 
 	//setup repository
 	userRepository := repository.NewUserRepository(database)
 
 	//setup service
-	userService := service.NewUserService(&userRepository)
-	authService := service.NewAuthService(&userRepository)
+	userService := service.NewUserService(userRepository)
+	authService := service.NewAuthService(userRepository)
 
 	//setup controller
-	userController := controller.NewUserController(&userService)
-	authController := controller.NewAuthController(&authService)
+	userController := controller.NewUserController(userService)
+	authController := controller.NewAuthController(authService)
+
 	//setup routes
-	userController.Route(app)
-	authController.Route(app)
+	userController.NewRoute(app)
+	authController.NewRoute(app)
 
-	err := app.Listen(":3001")
-
+	//serve port
+	err := app.Listen(":8000")
 	exception.PanicIfNeeded(err)
 }

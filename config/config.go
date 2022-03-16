@@ -18,8 +18,8 @@ func (config *configImpl) Get(key string) string {
 	return os.Getenv(key)
 }
 
-func New(filenames ...string) Config {
-	err := godotenv.Load(filenames...)
+func NewConfiguration() Config {
+	err := godotenv.Load()
 
 	exception.PanicIfNeeded(err)
 	return &configImpl{}

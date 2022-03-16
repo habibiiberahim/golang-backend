@@ -6,24 +6,24 @@ import (
 	"gorm.io/gorm"
 )
 
-func NewUserRepository(db *gorm.DB) UserRepository {
-	return userRepositoryImpl{
+func NewUserRepository(db *gorm.DB) *UserRepositoryImpl {
+	return &UserRepositoryImpl{
 		DB: db,
 	}
 }
 
-type userRepositoryImpl struct {
+type UserRepositoryImpl struct {
 	DB *gorm.DB
 }
 
-func (repository userRepositoryImpl) FindAll() (users []entity.User) {
+func (repository UserRepositoryImpl) FindAll() (users []entity.User) {
 	return users
 }
-func (repository userRepositoryImpl) Store() {
+func (repository UserRepositoryImpl) Store() {
 
 }
 
-func (repository userRepositoryImpl) GetOrRegister(provider string, user *structs.User) entity.User {
+func (repository UserRepositoryImpl) GetOrRegister(provider string, user *structs.User) entity.User {
 	userData := entity.User{
 		FullName: user.FullName,
 		Email:    user.Email,

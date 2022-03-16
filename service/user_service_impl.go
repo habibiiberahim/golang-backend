@@ -5,18 +5,18 @@ import (
 )
 
 //Create service
-func NewUserService(userRepository *repository.UserRepository) UserService {
-	return &userServiceImpl{
-		UserRepository: *userRepository,
+func NewUserService(userRepository repository.UserRepository) *UserServiceImpl {
+	return &UserServiceImpl{
+		UserRepository: userRepository,
 	}
 }
 
 //implement services
-type userServiceImpl struct {
+type UserServiceImpl struct {
 	UserRepository repository.UserRepository
 }
 
-// func (service *userServiceImpl) FindAll() (responses []model.GetUserResponse) {
+// func (service *UserServiceImpl) FindAll() (responses []model.GetUserResponse) {
 // 	users := service.UserRepository.FindAll()
 // 	for _, user := range users {
 // 		responses = append(responses, model.GetUserResponse{
